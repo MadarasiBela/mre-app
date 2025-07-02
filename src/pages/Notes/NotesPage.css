@@ -1,0 +1,52 @@
+.notes-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem; /* vagy kisebb, ha nem fér ki */
+}
+
+.note-item {
+  flex: 0 1 calc(33.333% - 2rem); /* 3 oszlop, a gap-et levonva */
+  min-width: 0; /* fontos, hogy ne nőjön túl */
+  box-sizing: border-box;
+  /* további stílusok... */
+}
+
+.note-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.note-title {
+  font-size: 1.1rem;
+  text-align: center;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+/* Lebegő új Note gomb */
+.add-note-btn {
+  /* NE legyen benne: position: absolute; vagy position: fixed; */
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #3b82f6;
+  color: #fff;
+  font-size: 2rem;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  cursor: pointer;
+  margin-left: 1.5rem;
+}
+
+.notes-hint-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* vagy flex-end, ha csak jobb oldalra akarod a gombot */
+  margin-bottom: 1.5rem;
+}
+
+.notes-hint {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #222;
+}

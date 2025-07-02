@@ -1,17 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const jsx_runtime_1 = require("react/jsx-runtime");
+const client_1 = __importDefault(require("react-dom/client"));
+const MreApp_1 = __importDefault(require("./components/Application/MreApp"));
+require("./index.css"); // Assuming you have some global styles in index.css
+const root = client_1.default.createRoot(document.getElementById('app'));
+root.render((0, jsx_runtime_1.jsx)(MreApp_1.default, {}));
+(0, jsx_runtime_1.jsx)("div", { id: "app" });

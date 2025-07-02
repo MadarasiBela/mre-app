@@ -1,0 +1,32 @@
+/* Példa: EditorPage.css vagy globális CSS */
+textarea {
+  width: 90%;
+  min-width: 0;
+  max-width: 90%;
+  height: 40vh; /* vagy amekkora kell */
+  box-sizing: border-box;
+  resize: both; /* vagy both, ha vízszintesen is lehessen */
+  font-size: 1rem;
+}
+
+/* például: EditorPage.css */
+.centered-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* .centered-controls {
+  width: 100%;
+  max-width: none;
+} */
+
+.centered-controls textarea {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: 40vh;
+  box-sizing: border-box;
+  resize: vertical;
+  font-size: 1rem;
+}

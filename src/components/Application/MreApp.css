@@ -1,0 +1,55 @@
+body {
+    background-color: #6aa4dd; /* Change to your preferred color */
+    border: 4px solid #333;    /* Solid frame, adjust color and width as needed */
+    margin: 20px;              /* Space between frame and window edge */
+    padding: 20px;             /* Space between content and frame */
+    box-sizing: border-box;    /* Ensures border is included in width/height */
+}
+
+.centered-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.highlight-label {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 0.1em;
+  /* margin-top: 0.3em; */
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* vagy 2rem, ha nagyobb tér kell */
+  margin-bottom: 1em;
+}
+
+ .welcome-page{
+  /* display: flex; */
+  align-items: center;
+  gap: 1rem; /* vagy 2rem, ha nagyobb tér kell */
+  margin-bottom: 1em;
+ }
+
+.mre-app {
+  background: rgba(0,0,0,0.01); /* csak hogy legyen "fogható" terület */
+  min-height: auto;
+}
+
+/* .notes-list,
+.note-item,
+.notes-hint-row,
+.add-note-btn,
+.centered-controls,
+.notes-page,
+.register-page,
+.login-page,
+.editor-page {
+  border: 1px dashed #bbb !important;
+} */
+
+
