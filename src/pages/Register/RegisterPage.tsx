@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import './RegisterPage.css';
 import Title from '../../components/Title/Title';
 import CommonButton from '../../components/Button/CommonButton';
-import Footer from '../../components/Footer/Footer';
+// import Footer from '../../components/Footer/Footer';
 
 export default function RegisterPage() {
   const [userName, setUserName] = useState<string>('');
   const [fullName, setFullName] = useState<string>('');
-  const footerMessage: string = "This is the Register page specific footer. Please register to use the MRE App!";
-  const footerExtra: string = "Only 256 characters. User name and full name are required.";
+  // const footerMessage: string = "This is the Register page specific footer. Please register to use the MRE App!";
+  // const footerExtra: string = "Only 256 characters. User name and full name are required.";
 
   const isValid: boolean =     userName.trim().length > 0  
                   &&  fullName.trim().length > 0;
@@ -43,7 +43,7 @@ export default function RegisterPage() {
         <CommonButton disabled={!isValid}>OK</CommonButton>
       </div>
     </div>
-    <Footer message={footerMessage} extra={footerExtra} />
+    {/* <Footer message={footerMessage} extra={footerExtra} /> */}
     </>
   );
 }

@@ -37,19 +37,30 @@ body {
 
 .mre-app {
   background: rgba(0,0,0,0.01); /* csak hogy legyen "fogható" terület */
-  min-height: auto;
+  min-height: max-content;
 }
 
-/* .notes-list,
-.note-item,
-.notes-hint-row,
-.add-note-btn,
-.centered-controls,
-.notes-page,
-.register-page,
-.login-page,
-.editor-page {
-  border: 1px dashed #bbb !important;
-} */
+article {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.editor-field-container {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.editorField.editor-field {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  resize: both;
+  font-size: 1rem;
+  min-height: 0; /* biztosítja, hogy a textarea ne nyúljon túl a szülőn */
+}
 
 

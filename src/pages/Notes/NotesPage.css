@@ -40,13 +40,15 @@
 
 .notes-hint-row {
   display: flex;
-  align-items: center;
+  align-items: right; /* vagy center, ha középre akarod */
   justify-content: space-between; /* vagy flex-end, ha csak jobb oldalra akarod a gombot */
   margin-bottom: 1.5rem;
 }
 
 .notes-hint {
   margin: 0;
+  flex-grow: 1; /* hogy kitöltse a helyet */
+  text-align: right; /* vagy center, ha középre akarod */
   font-size: 1.1rem;
   color: #222;
 }

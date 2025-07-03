@@ -3,7 +3,7 @@ import './LoginPage.css';
 import Title from '../../components/Title/Title';
 import CommonButton from '../../components/Button/CommonButton';
 import '../../components/Button/CommonButton.css';
-import Footer from '../../components/Footer/Footer';
+// import Footer from '../../components/Footer/Footer';
 import type {CurrentStatus} from '../../components/Title/Title'
 
 interface TitleProps {
@@ -46,7 +46,7 @@ export default function LoginPage() {
         {/* <CommonButton disabled={!validUsername || !validPassword}>Login</CommonButton> */}
         <CommonButton disabled={!validUsername}>Login</CommonButton>
       </div>
-    <Footer message={footerMessage} extra={footerExtra} />
+    {/* <Footer message={footerMessage} extra={footerExtra} /> */}
     </>
   );
 }

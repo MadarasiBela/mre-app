@@ -1,32 +1,40 @@
-/* Példa: EditorPage.css vagy globális CSS */
-textarea {
+/* textarea {
   width: 90%;
   min-width: 0;
-  max-width: 90%;
-  height: 40vh; /* vagy amekkora kell */
+  max-width: 100%;
+  height: 140vh;
   box-sizing: border-box;
-  resize: both; /* vagy both, ha vízszintesen is lehessen */
+  resize: both; 
   font-size: 1rem;
-}
-
-/* például: EditorPage.css */
-.centered-controls {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-}
-
-/* .centered-controls {
-  width: 100%;
-  max-width: none;
+  background: #eb5870; háttérszín hozzáadása
 } */
 
-.centered-controls textarea {
+
+.editor-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* vagy 100% ha már van magasság */
+}
+
+.editor-field-container {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column; /* <-- EZ A LÉNYEG! */
+  min-height: 0;
+}
+
+.editorField.editor-field {
+  flex: 1 1 auto;
   width: 100%;
   min-width: 0;
   max-width: 100%;
-  height: 40vh;
   box-sizing: border-box;
-  resize: vertical;
+  resize: both;
   font-size: 1rem;
+}
+.some-footer {
+  flex: 0 0 auto;
+  padding: 10px;
+  background-color: #f1f1f1; /* vagy bármilyen szín */
+  text-align: center;
 }
