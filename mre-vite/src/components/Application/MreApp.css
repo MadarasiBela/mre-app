@@ -29,15 +29,18 @@ body {
 }
 
  .welcome-page{
-  /* display: flex; */
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem; /* vagy 2rem, ha nagyobb tér kell */
-  margin-bottom: 1em;
+  margin-top: 2rem;
+  gap: 1rem;
+  color: #222;
  }
 
 .mre-app {
-  background: rgba(0,0,0,0.01); /* csak hogy legyen "fogható" terület */
-  min-height: max-content;
+  background: #f9f9f9;
+  min-height: 100vh;
+  color: #222;
 }
 
 article {
@@ -45,12 +48,14 @@ article {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  color: #222;
 }
 .editor-field-container {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   min-height: 0;
+  color: #222;
 }
 .editorField.editor-field {
   flex: 1 1 auto;
@@ -61,6 +66,7 @@ article {
   resize: both;
   font-size: 1rem;
   min-height: 0; /* biztosítja, hogy a textarea ne nyúljon túl a szülőn */
+  color: #222;
 }
 
 

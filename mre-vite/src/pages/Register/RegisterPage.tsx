@@ -4,29 +4,33 @@ import Title from '../../components/Title/Title';
 import CommonButton from '../../components/Button/CommonButton';
 import { useNavigate } from 'react-router-dom';
 
-export default function RegisterPage(props: any) {
+type RegisterPageProps = {
+  onNavigate: (page: string) => void;
+};
+
+export default function RegisterPage({ onNavigate }: RegisterPageProps) {
   const [userName, setUserName] = useState<string>('');
   const [fullName, setFullName] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  // const footerMessage: string = "This is the Register page specific footer. Please register to use the MRE App!";
-  // const footerExtra: string = "Only 256 characters. User name and full name are required.";
 
-  const isValid: boolean =     userName.trim().length > 0  &&  fullName.trim().length > 0;
+  const isValid = userName.trim().length > 0 && fullName.trim().length > 0;
 
   const handleRegister = async () => {
-    // Itt hívod meg a szervizt (pl. fetch vagy axios)
-    const response = await registerUser(userName, fullName);
-    if (response.success) {
-      // Navigáció a NotesPage-re
-      navigate('/notes');
-    } else {
-      // Hibakezelés
-      alert("Sikertelen regisztráció!");
+    setError(null); // előző hiba törlése
+    try {
+      const response = await registerUser(userName, fullName);
+      if (response.success) {
+        navigate('/login');
+      } else {
+        setError(response.message || "Sikertelen regisztráció!");
+      }
+    } catch (err: any) {
+      setError("Hálózati vagy szerverhiba: " + (err.message || err));
     }
   };
 
   return (
-    <>
     <div className="register-page">
       <Title title="Register" />
       <div className="centered-controls">
@@ -53,18 +57,21 @@ export default function RegisterPage(props: any) {
           />
         </div>
         <CommonButton disabled={!isValid} onClick={handleRegister}>OK</CommonButton>
+        {error && <div className="error-message">{error}</div>}
       </div>
     </div>
-    {/* <Footer message={footerMessage} extra={footerExtra} /> */}
-    </>
   );
 }
 
 async function registerUser(userName: string, fullName: string) {
+  // const response = await fetch('http://localhost:3001/api/register', {
   const response = await fetch('/api/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userName, fullName }),
   });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
   return response.json();
 }

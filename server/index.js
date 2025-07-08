@@ -10,8 +10,10 @@ app.use(express.json());
 const dbConfig = {
   user: 'SA',
   password: 'ACCB72A231B3BFE22361B62CBE9019611B691201FFA00F9602BB1FFAC67E+Mb1',
-  server: 'localhost\\SQLEXPRESS',
+  // server: 'localhost\\SQLEXPRESS',
+  server: 'localhost',
   database: 'MRE',
+  port: 1433,
   options: {
     encrypt: false, // fejlesztéshez
     trustServerCertificate: true,

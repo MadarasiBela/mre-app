@@ -3,10 +3,23 @@
 // import viteLogo from '/vite.svg'
 // import './App.css'
 
+import { Routes, Route } from 'react-router-dom';
+import RegisterPage from './pages/Register/RegisterPage';
+import LoginPage from './pages/Login/LoginPage';
+import NotesPage from './pages/Notes/NotesPage';
+import EditorPage from './pages/Editor/EditorPage';
 import MreApp from './components/Application/MreApp';
 
 export default function App() {
-  return <MreApp />
+  return (
+    <Routes>
+      <Route path="/" element={<MreApp />} />
+      <Route path="/register" element={<RegisterPage onNavigate={() => {}} />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/notes" element={<NotesPage />} />
+      <Route path="/editor" element={<EditorPage />} />
+    </Routes>
+  );
 }
 
 // function App() {
