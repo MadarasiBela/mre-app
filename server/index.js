@@ -6,16 +6,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MSSQL konfiguráció
+// MSSQL configuration
 const dbConfig = {
-  user: 'SA',
-  password: 'ACCB72A231B3BFE22361B62CBE9019611B691201FFA00F9602BB1FFAC67E+Mb1',
-  // server: 'localhost\\SQLEXPRESS',
-  server: 'localhost',
-  database: 'MRE',
-  port: 1433,
+  user: process.env.DB_USER, // <--- use env only
+  password: process.env.DB_PASSWORD, // <--- use env only
+  server: process.env.DB_SERVER, // <--- use env only
+  database: process.env.DB_DATABASE, // <--- use env only
+  port: parseInt(process.env.DB_PORT, 10), // <--- use env only
   options: {
-    encrypt: false, // fejlesztéshez
+    encrypt: false,
     trustServerCertificate: true,
   },
 };
@@ -23,19 +22,21 @@ const dbConfig = {
 // Regisztrációs végpont
 app.post('/api/register', async (req, res) => {
   const { userName, fullName } = req.body;
+  console.log("Received register request:", { userName, fullName });
   if (!userName || !fullName) {
+    console.log("Missing data in request body");
     return res.json({ success: false, message: 'Missing data: username or full name.' });
   }
   try {
-    // MSSQL kapcsolat
     await sql.connect(dbConfig);
     await sql.query`
       INSERT INTO Users (UserName, FullName)
       VALUES (${userName}, ${fullName})
     `;
+    console.log("User registered successfully");
     res.json({ success: true });
   } catch (err) {
-    console.error(err);
+    console.error("Database error:", err);
     res.json({ success: false, message: 'Database error: ' + err.message });
   }
 });

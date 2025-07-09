@@ -17,9 +17,9 @@ export default function MreApp() {
         <article>
           {page === 'welcome' && (
             <div className="welcome-page">
-              <h1>Welcome to the Medical Record Editor (MRE) App!</h1>
+              <h2>Welcome to the Medical Record Editor (MRE) App!</h2>
               <p>Please select a menu item to get started.</p>
-              <p>If you have already been registereed select <strong>Login</strong> </p>
+              <p>If you have already been registered select <strong>Login</strong> </p>
               <p>else select <strong>Register</strong>!</p>
             </div>
           )}

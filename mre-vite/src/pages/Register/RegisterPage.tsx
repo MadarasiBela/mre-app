@@ -15,18 +15,24 @@ export default function RegisterPage({ onNavigate }: RegisterPageProps) {
   const navigate = useNavigate();
 
   const isValid = userName.trim().length > 0 && fullName.trim().length > 0;
+  const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
   const handleRegister = async () => {
-    setError(null); // előző hiba törlése
+    setError(null); // delete any previous error message
+    if (!isValid) {
+      setError("Both user name and full name are required!");
+      return;
+    }
     try {
-      const response = await registerUser(userName, fullName);
+      console.log("Registering user:", { userName, fullName, apiUrl });
+      const response = await registerUser(userName, fullName, apiUrl);
       if (response.success) {
         navigate('/login');
       } else {
-        setError(response.message || "Sikertelen regisztráció!");
+        setError(response.message || "Erroneous registration failed!");
       }
     } catch (err: any) {
-      setError("Hálózati vagy szerverhiba: " + (err.message || err));
+      setError("Network or server error: " + (err.message || err));
     }
   };
 
@@ -63,15 +69,19 @@ export default function RegisterPage({ onNavigate }: RegisterPageProps) {
   );
 }
 
-async function registerUser(userName: string, fullName: string) {
-  // const response = await fetch('http://localhost:3001/api/register', {
-  const response = await fetch('/api/register', {
+async function registerUser(userName: string, fullName: string, apiUrl: string) {
+  console.log("Sending fetch to:", `${apiUrl}/api/register`);
+  console.log("Payload:", { userName, fullName });
+  const response = await fetch(`${apiUrl}/api/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userName, fullName }),
   });
+  console.log("Fetch response status:", response.status);
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
-  return response.json();
+  const data = await response.json();
+  console.log("Fetch response data:", data);
+  return data;
 }
