@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 3001
 
-CMD ["node", "index.js"]
+CMD ["sh", "-c", "node wait-for-mre-db.js && node index.js"]
