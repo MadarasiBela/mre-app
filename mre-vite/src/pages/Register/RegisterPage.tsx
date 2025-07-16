@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import './RegisterPage.css';
 import Title from '../../components/Title/Title';
 import CommonButton from '../../components/Button/CommonButton';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
+// import LoginPage from '../Login/LoginPage';
 
 type RegisterPageProps = {
   onNavigate: (page: string) => void;
@@ -12,7 +13,7 @@ export default function RegisterPage({ onNavigate }: RegisterPageProps) {
   const [userName, setUserName] = useState<string>('');
   const [fullName, setFullName] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const isValid = userName.trim().length > 0 && fullName.trim().length > 0;
   const apiUrl = import.meta.env.VITE_API_URL || '/api';
@@ -26,9 +27,13 @@ export default function RegisterPage({ onNavigate }: RegisterPageProps) {
     try {
       console.log("Registering user:", { userName, fullName, apiUrl });
       const response = await registerUser(userName, fullName, apiUrl);
-      if (response.success) {
-        navigate('/login');
+      if (response && response.success) {
+        console.log(`Response is: ${response.success}`);
+        console.log(`Navigating to LoginPage.`);
+        // navigate('/Login');
+        onNavigate('Login');
       } else {
+        console.log(`Response is: ${response.success}`);
         setError(response.message || "Erroneous registration failed!");
       }
     } catch (err: any) {

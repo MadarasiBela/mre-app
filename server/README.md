@@ -1,4 +1,4 @@
-# Medical Record Editor (MRE) App
+# Medical Record Editor (MRE) App Server
 
 For English scroll down!
 
@@ -25,8 +25,6 @@ npm start
 
 - Node.js
 - npm
-- docker
-- docker compose
 
 ---
 
@@ -55,8 +53,6 @@ npm start
 
 - Node.js
 - npm
-- docker
-- docker compose
 
 ---
 

@@ -3,19 +3,38 @@ import './LoginPage.css';
 import Title from '../../components/Title/Title';
 import CommonButton from '../../components/Button/CommonButton';
 import '../../components/Button/CommonButton.css';
-// import Footer from '../../components/Footer/Footer';
-// import type {CurrentStatus} from '../../components/Title/Title'
+import { useNavigate } from 'react-router-dom';
 
-// interface TitleProps {
-//   title: string;
-//   currentStatus?: CurrentStatus;
-// }
+type LoginPageProps = {
+  onNavigate: (page: string) => void;
+};
 
-export default function LoginPage() {
+export default function LoginPage({ onNavigate }: LoginPageProps) {
   const [userName, setUserName] = useState<string>('');
   const validUsername: boolean = userName.trim().length > 0;
-  // const footerMessage: string = "Please login to access this App!";
-  // const footerExtra: string = "You can login with your username."
+  const [error, setError] = useState<string | null>(null);
+  // const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL || '/api';
+
+
+    const handleLogin = async () => {
+    setError(null); // delete any previous error message
+    if (!validUsername) {
+      setError("User name is required!");
+      return;
+    }
+    try {
+      console.log("Logging in user:", { userName });
+      const response = await loginUser(userName, apiUrl);
+      if (response.success) {
+        onNavigate('/notes');
+      } else {
+        setError(response.message || "Login failed!");
+      }
+    } catch (err: any) {
+      setError("Network or server error: " + (err.message || err));
+    }
+  };
 
   return (
     <>
@@ -44,9 +63,27 @@ export default function LoginPage() {
           />
         </div> */}
         {/* <CommonButton disabled={!validUsername || !validPassword}>Login</CommonButton> */}
-        <CommonButton disabled={!validUsername}>Login</CommonButton>
+        <CommonButton disabled={!validUsername} onClick={handleLogin}>Login</CommonButton>
+        {error && <div className="error-message">{error}</div>}
       </div>
     {/* <Footer message={footerMessage} extra={footerExtra} /> */}
     </>
   );
+}
+
+async function loginUser(userName: string, apiUrl: string) {
+  console.log("Sending fetch to:", `${apiUrl}/api/login`);
+  console.log("Payload:", { userName });
+  const response = await fetch(`${apiUrl}/api/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userName }),
+  });
+  console.log("Fetch response status:", response.status);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+  const data = await response.json();
+  console.log("Fetch response data:", data);
+  return data;
 }

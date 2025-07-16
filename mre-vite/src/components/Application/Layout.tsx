@@ -4,8 +4,8 @@ import { Outlet } from 'react-router-dom';
 export default function Layout() {
   return (
     <>
-      <MreApp /> {/* This contains your Burger menu and maybe other layout */}
-      <Outlet />
+      {/* <Outlet /> */}
+      <MreApp /> {/* This contains my Burger menu and other layout */}
     </>
   );
 }

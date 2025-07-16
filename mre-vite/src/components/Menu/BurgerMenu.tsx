@@ -15,7 +15,7 @@ export default function BurgerMenu({ onNavigate }: BurgerMenuProps) {
 
   return (
     <div className="burger-menu-container">
-      <button className="burger-icon" onClick={() => setOpen(!open)}>
+      <button className="burger-icon" id="text" onClick={() => setOpen(!open)}>
         <span />
         <span />
         <span />

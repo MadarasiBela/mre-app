@@ -6,25 +6,18 @@ import RegisterPage from '../../pages/Register/RegisterPage';
 import LoginPage from '../../pages/Login/LoginPage';
 import NotesPage from '../../pages/Notes/NotesPage';
 import EditorPage from '../../pages/Editor/EditorPage';
-
+import WelcomePage from '../../pages/Welcome/WelcomePage';
 
 export default function MreApp() {
-  const [page, setPage] = useState<string>('welcome');
+  const [page, setPage] = useState<string>('Welcome');
   return (
     <>
       <div className="mre-app">
         <BurgerMenu onNavigate={setPage} />
         <article>
-          {page === 'welcome' && (
-            <div className="welcome-page">
-              <h2>Welcome to the Medical Record Editor (MRE) App!</h2>
-              <p>Please select a menu item to get started.</p>
-              <p>If you have already been registered select <strong>Login</strong> </p>
-              <p>else select <strong>Register</strong>!</p>
-            </div>
-          )}
+          {page === 'Welcome' && <WelcomePage />}
           {page === 'Register' && <RegisterPage onNavigate={setPage} />}
-          {page === 'Login' && <LoginPage />}
+          {page === 'Login' && <LoginPage  onNavigate={setPage}/>}
           {page === 'Notes' && <NotesPage />}
           {page === 'Editor' && <EditorPage />}
         </article>
