@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import './LoginPage.css';
 import Title from '../../components/Title/Title';
 import CommonButton from '../../components/Button/CommonButton';
 import '../../components/Button/CommonButton.css';
 import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+// import { sanitizeInput } from '../../utils/sanitizeHtml';
+// import { loginUser } from '../../api/auth'; // Assuming you have an API function for login
 
 type LoginPageProps = {
   onNavigate: (page: string) => void;
@@ -11,11 +14,11 @@ type LoginPageProps = {
 
 export default function LoginPage({ onNavigate }: LoginPageProps) {
   const [userName, setUserName] = useState<string>('');
-  const validUsername: boolean = userName.trim().length > 0;
+  const validUsername: boolean = userName.trim().length > 0 && userName.trim().length < 256;
   const [error, setError] = useState<string | null>(null);
   // const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL || '/api';
-
+  // const apiUrl = import.meta.env.VITE_API_URL || '/api';
+  const apiUrl = '/api'; // For local development
 
     const handleLogin = async () => {
     setError(null); // delete any previous error message

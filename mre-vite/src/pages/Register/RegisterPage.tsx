@@ -2,26 +2,35 @@ import React, { useState } from 'react';
 import './RegisterPage.css';
 import Title from '../../components/Title/Title';
 import CommonButton from '../../components/Button/CommonButton';
-// import { useNavigate } from 'react-router-dom';
-// import LoginPage from '../Login/LoginPage';
+import cleaningFromHtml from '../../utils/cleaningHtml';
+import '../../components/Button/CommonButton.css';
 
 type RegisterPageProps = {
   onNavigate: (page: string) => void;
 };
 
 export default function RegisterPage({ onNavigate }: RegisterPageProps) {
-  const [userName, setUserName] = useState<string>('');
-  const [fullName, setFullName] = useState<string>('');
+  type userNameType = string;
+  type fullNameType = string;
+  const [userName, setUserName] = useState<userNameType>('');
+  const [fullName, setFullName] = useState<fullNameType>('');
   const [error, setError] = useState<string | null>(null);
-  // const navigate = useNavigate();
 
-  const isValid = userName.trim().length > 0 && fullName.trim().length > 0;
-  const apiUrl = import.meta.env.VITE_API_URL || '/api';
+  const validUserName: boolean = userName.trim().length > 0 && userName.trim().length < 256;
+  const validFullName: boolean = fullName.trim().length > 0 && fullName.trim().length < 256;
+  // const apiUrl = import.meta.env.VITE_API_URL || '/api';
+  const apiUrl = '/api';
 
   const handleRegister = async () => {
     setError(null); // delete any previous error message
-    if (!isValid) {
+    if (!validUserName || !validFullName) {
       setError("Both user name and full name are required!");
+      return;
+    } else if (userName.trim().length < 1 || fullName.trim().length < 1) {
+      setError("Both user name and full name must be at least 1 character long!");
+      return;
+    } else if (userName.trim().length > 255 || fullName.trim().length > 255) {
+      setError("Both user name and full name must be less than 256 characters long!");
       return;
     }
     try {
@@ -53,7 +62,7 @@ export default function RegisterPage({ onNavigate }: RegisterPageProps) {
             type="text"
             placeholder="User name eg: Kóbor "
             value={userName}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserName(cleaningFromHtml(e.target.value))}
           />
         </div>
         <div className="input-row-2">
@@ -64,10 +73,10 @@ export default function RegisterPage({ onNavigate }: RegisterPageProps) {
             type="text"
             placeholder="Full name eg: Kóbor János"
             value={fullName}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFullName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFullName(cleaningFromHtml(e.target.value))}
           />
         </div>
-        <CommonButton disabled={!isValid} onClick={handleRegister}>OK</CommonButton>
+        <CommonButton disabled={!validUserName || !validFullName} onClick={handleRegister}>OK</CommonButton>
         {error && <div className="error-message">{error}</div>}
       </div>
     </div>

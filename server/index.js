@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const sql = require('mssql');
+const sanitizeHtml = require('sanitize-html'); // Importing sanitize-html for sanitizing HTML input
 
 
 const app = express();
@@ -22,37 +23,72 @@ const dbConfig = {
 
 // Registration endpoint
 app.post('/api/register', async (req, res) => {
-  const { userName, fullName } = req.body;  
+  const { userName, fullName } = req.body;
   console.log("Received register request:", { userName, fullName });
-  if (!userName || !fullName) {
+
+// Sanitize inputs to prevent XSS attacks
+  const sanitizedUserName = sanitizeHtml(userName, {
+    allowedTags: [],
+    allowedAttributes: {}
+  });
+  const sanitizedFullName = sanitizeHtml(fullName, {
+    allowedTags: [],
+    allowedAttributes: {}
+  });
+  console.log("Sanitized inputs:", { sanitizedUserName, sanitizedFullName });
+
+  // const { sanitizedUserName, sanitizedFullName } = req.body;
+  // console.log("Sanitized inputs:", { sanitizedUserName, sanitizedFullName });
+
+  // Validate inputs
+  if (!sanitizedUserName || !sanitizedFullName) {
     console.log("Missing data in request body");
     return res.json({ success: false, message: 'Missing data: username or full name.' });
+  } else if (sanitizedUserName.length < 1 || sanitizedFullName.length < 3) {
+    console.log("Username or full name too short");
+    return res.json({ success: false, message: 'Username and full name must be at least 1 characters long.' });
+  } else if (sanitizedUserName.length > 256 || sanitizedFullName.length > 256) {
+    console.log("Username or full name too long");
+    return res.json({ success: false, message: 'Username and full name must be at most 256 characters long.' });
+  } else if (!/^[a-zA-Z0-9_]+$/.test(sanitizedUserName)) {
+    console.log("Invalid characters in username");
+    return res.json({ success: false, message: 'Invalid characters in username. Only alphanumeric characters and underscores are allowed.' });
+  } else if (!/^[a-zA-Z\s]+$/.test(sanitizedFullName)) {
+    console.log("Invalid characters in full name");
+    return res.json({ success: false, message: 'Invalid characters in full name. Only alphabetic characters and spaces are allowed.' });
+  } else if (sanitizedUserName.toLowerCase() === sanitizedFullName.toLowerCase()) {
+    console.log("Username and full name cannot be the same");
+    return res.json({ success: false, message: 'Username and full name cannot be the same.' });
+  } /* html specialchars */ else if (sanitizedUserName.includes('<') || sanitizedUserName.includes('>') || sanitizedFullName.includes('<') || sanitizedFullName.includes('>')) {
+    console.log("HTML special characters detected in username or full name");
+    return res.json({ success: false, message: 'HTML special characters are not allowed in username or full name.' });
   }
-  // try {
-  //   await connect(dbConfig);
-  //   await query`
-  //   IF EXISTS (SELECT * FROM Users WHERE UserName = N'Edo')
-  //   BEGIN
-  //   SELECT UserName, FullName FROM Users WHERE UserName = N'Edo';
-  //   END
-  //   GO
-  //   `;
-  //   console.log("User already registered!");
-  //   res.json({ success: false });
-  //   if (!res.json) {
-  //     console.log("User already registered!");
-  //     return res.json({ success: false, message: 'You are already registered. Select Login!' });
-  //   }
-  // } catch (err) {
-  //   console.error("Database error:", err);
-  //   res.json({ success: false, message: 'Database error: ' + err.message });
-  // }
+
+  console.log("Validation passed, proceeding with registration");
+
+  // Check if user already exists
+  try {
+    await sql.connect(dbConfig);
+    // const result = await sql.query`
+    //   SELECT * FROM Users WHERE UserName = ${sanitizedUserName} OR FullName = ${sanitizedFullName}
+    // `;
+    const result = await sql.query`
+      SELECT * FROM Users WHERE UserName = ${sanitizedUserName} 
+    `;
+    if (result.recordset.length > 0) {
+      console.log("UserName already registered!");
+      return res.json({ success: false, message: 'UserName already registered. Go to Login!' });
+    }
+  } catch (err) {
+    console.error("Database error:", err);
+    return res.json({ success: false, message: 'Database error: ' + err.message });
+  }
 
   try {
     await sql.connect(dbConfig);
     await sql.query`
       INSERT INTO Users (UserName, FullName)
-      VALUES (${userName}, ${fullName})
+      VALUES (${sanitizedUserName}, ${sanitizedFullName})
     `;
     console.log("User registered successfully");
     res.json({ success: true });

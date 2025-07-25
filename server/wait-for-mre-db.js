@@ -1,3 +1,5 @@
+import sql from 'mssql'; // Importing mssql for database operations
+
 const sql = require('mssql');
 
 const config = {
