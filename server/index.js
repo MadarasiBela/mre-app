@@ -47,6 +47,12 @@ app.post('/api/register', async (req, res) => {
   } else if (sanitizedUserName.length < 1 || sanitizedFullName.length < 3) {
     console.log("Username or full name too short");
     return res.json({ success: false, message: 'Username and full name must be at least 1 characters long.' });
+  } else if (sanitizedFullName.length < 3 ){
+    console.log("Full name too short");
+    return res.json({ success: false, message: 'Full name must be at least 3 characters long.' });
+  } else if (sanitizedFullName.indexOf(' ') == -1) {
+    console.log("Full name must contain at least one space");
+    return res.json({ success: false, message: 'Full name must contain at least one space.' });
   } else if (sanitizedUserName.length > 256 || sanitizedFullName.length > 256) {
     console.log("Username or full name too long");
     return res.json({ success: false, message: 'Username and full name must be at most 256 characters long.' });
