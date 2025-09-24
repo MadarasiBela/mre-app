@@ -56,12 +56,12 @@ app.post('/api/register', async (req, res) => {
   } else if (sanitizedUserName.length > 256 || sanitizedFullName.length > 256) {
     console.log("Username or full name too long");
     return res.json({ success: false, message: 'Username and full name must be at most 256 characters long.' });
-  } else if (!/^[a-zA-Z0-9_]+$/.test(sanitizedUserName)) {
+  } else if (!/^[\p{L}\p{N}_]+$/u.test(sanitizedUserName)) {
     console.log("Invalid characters in username");
-    return res.json({ success: false, message: 'Invalid characters in username. Only alphanumeric characters and underscores are allowed.' });
-  } else if (!/^[a-zA-Z\s]+$/.test(sanitizedFullName)) {
+    return res.json({ success: false, message: 'Invalid characters in username. Only letters, numbers and underscores are allowed.' });
+  } else if (!/^[\p{L}\p{N}_ ]+$/u.test(sanitizedFullName)) {
     console.log("Invalid characters in full name");
-    return res.json({ success: false, message: 'Invalid characters in full name. Only alphabetic characters and spaces are allowed.' });
+    return res.json({ success: false, message: 'Invalid characters in full name. Only letters, numbers, spaces and underscores are allowed.' });
   } else if (sanitizedUserName.toLowerCase() === sanitizedFullName.toLowerCase()) {
     console.log("Username and full name cannot be the same");
     return res.json({ success: false, message: 'Username and full name cannot be the same.' });
@@ -75,12 +75,11 @@ app.post('/api/register', async (req, res) => {
   // Check if user already exists
   try {
     await sql.connect(dbConfig);
-    // const result = await sql.query`
-    //   SELECT * FROM Users WHERE UserName = ${sanitizedUserName} OR FullName = ${sanitizedFullName}
-    // `;
+
     const result = await sql.query`
       SELECT * FROM Users WHERE UserName = ${sanitizedUserName} 
     `;
+    
     if (result.recordset.length > 0) {
       console.log("UserName already registered!");
       return res.json({ success: false, message: 'UserName already registered. Go to Login!' });
@@ -101,6 +100,87 @@ app.post('/api/register', async (req, res) => {
   } catch (err) {
     console.error("Database error:", err);
     res.json({ success: false, message: 'Database error: ' + err.message });
+  }
+});
+
+// Login endpoint
+app.post('/api/login', async (req, res) => {
+  const { userName } = req.body;
+  try {
+    await sql.connect(dbConfig);
+    // Check if user exists
+    const userResult = await sql.query`
+      SELECT Id FROM Users WHERE UserName = ${userName}
+    `;
+    if (userResult.recordset.length === 0) {
+      return res.json({ success: false, message: 'User not found!' });
+    }
+    const userId = userResult.recordset[0].Id;
+
+    // Set status to online
+    await sql.query`
+      MERGE UserStatus AS target
+      USING (SELECT ${userId} AS UserID) AS source
+      ON (target.UserID = source.UserID)
+      WHEN MATCHED THEN
+        UPDATE SET Logon = 1
+      WHEN NOT MATCHED THEN
+        INSERT (UserID, Logon) VALUES (${userId}, 1);
+    `;
+
+    res.json({ success: true });
+  } catch (err) {
+    res.json({ success: false, message: err.message });
+  }
+});
+
+// Check online status endpoint
+app.post('/api/is-online', async (req, res) => {
+  const { userName } = req.body;
+  try {
+    await sql.connect(dbConfig);
+    const result = await sql.query`
+      SELECT s.Logon
+      FROM Users u
+      JOIN UserStatus s ON u.Id = s.UserID
+      WHERE u.UserName = ${userName}
+    `;
+    if (result.recordset.length > 0 && result.recordset[0].Logon) {
+      res.json({ online: true });
+    } else {
+      res.json({ online: false });
+    }
+  } catch (err) {
+    res.json({ online: false, message: err.message });
+  }
+});
+
+// Notes endpoint
+app.get('/api/notes', async (req, res) => {
+  const userName = req.query.userName;
+  try {
+    await sql.connect(dbConfig);
+
+    // Create Notes table if not exists
+    await sql.query(`
+      IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Notes' AND xtype='U')
+      CREATE TABLE Notes (
+        Id INT IDENTITY PRIMARY KEY,
+        Title NVARCHAR(256) NOT NULL,
+        Content NVARCHAR(MAX) NOT NULL,
+        UserName NVARCHAR(256) NOT NULL
+      )
+    `);
+
+    // Query notes for the querying user
+    const result = await sql.query`
+      SELECT Id, Title, Content, UserName
+      FROM Notes
+      WHERE UserName = ${userName}
+    `;
+    res.json(result.recordset);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 

@@ -3,7 +3,7 @@ import './LoginPage.css';
 import Title from '../../components/Title/Title';
 import CommonButton from '../../components/Button/CommonButton';
 import '../../components/Button/CommonButton.css';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 // import { sanitizeInput } from '../../utils/sanitizeHtml';
 // import { loginUser } from '../../api/auth'; // Assuming you have an API function for login
@@ -17,8 +17,8 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
   const validUsername: boolean = userName.trim().length > 0 && userName.trim().length < 256;
   const [error, setError] = useState<string | null>(null);
   // const navigate = useNavigate();
-  // const apiUrl = import.meta.env.VITE_API_URL || '/api';
-  const apiUrl = '/api'; // For local development
+  const apiUrl = import.meta.env.VITE_API_URL || '/api';
+  //const apiUrl = '/api'; // For local development
 
     const handleLogin = async () => {
     setError(null); // delete any previous error message
@@ -29,6 +29,9 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
     try {
       console.log("Logging in user:", { userName });
       const response = await loginUser(userName, apiUrl);
+      console.log("Login response:", response);
+      // Check online status in DB here if needed
+
       if (response.success) {
         onNavigate('/notes');
       } else {

@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+// import ReactDom from 'react-dom/client';
+// import  { BrowserRouter } from 'react-router-dom';
+//import { BrowserRouter, useNavigate } from 'react-router-dom';
+//import registerUser from '../../api/register';
 import './RegisterPage.css';
 import Title from '../../components/Title/Title';
 import CommonButton from '../../components/Button/CommonButton';
@@ -18,8 +22,8 @@ export default function RegisterPage({ onNavigate }: RegisterPageProps) {
 
   const validUserName: boolean = userName.trim().length > 0 && userName.trim().length < 256;
   const validFullName: boolean = fullName.trim().length > 0 && fullName.trim().length < 256;
-  // const apiUrl = import.meta.env.VITE_API_URL || '/api';
-  const apiUrl = '/api';
+  const apiUrl = import.meta.env.VITE_API_URL || '/api';
+  //const apiUrl = '/api';
 
   const handleRegister = async () => {
     setError(null); // delete any previous error message

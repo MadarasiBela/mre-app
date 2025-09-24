@@ -1,37 +1,58 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './NotesPage.css';
 import Title from '../../components/Title/Title';
-// import CommonButton from './CommonButton';
-// import Footer from '../../components/Footer/Footer';
+import CommonButton from '../../components/Button/CommonButton';
 
-export default function NotesPage() {
-  // const footerMessage = "Here you can find your notes.";
+interface Note {
+  id: number;
+  title: string;
+  content: string;
+  userName: string;
+}
+
+interface NotesPageProps {
+  onNavigate?: (path: string) => void;
+}
+
+export default function NotesPage({ onNavigate }: NotesPageProps) {
+  const [notes, setNotes] = useState<any[]>([]);
+  const apiUrl = import.meta.env.VITE_API_URL || '/api';
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      const userName = localStorage.getItem('userName') || '';
+      const response = await fetch(`${apiUrl}/api/notes?userName=${encodeURIComponent(userName)}`);
+      const data = await response.json();
+      setNotes(data);
+    };
+    fetchNotes();
+  }, []);
+
+  // Sorting notes into columns (3 columns)
+  const columns = [[], [], []] as any[][];
+  notes.forEach((note, idx) => {
+    columns[idx % 3].push(
+      <div className="note-item" key={note.id}>{note.title}</div>
+    );
+  });
+
+  const handleNew = () => {
+    if (onNavigate) onNavigate('/editor');
+  };
 
   return (
-    <>
     <div className="notes-page">
       <div className="notes-header">
         <Title title=" My Notes" />
       </div>
       <article>
-        <div className="notes-hint-row">
-          <p className="notes-hint">For a new Note click + !</p>
-          <button className="add-note-btn">+</button>
+        <div className="notes-list" style={{ display: 'flex' }}>
+          {columns.map((col, i) => (
+            <div key={i} style={{ flex: 1 }}>{col}</div>
+          ))}
         </div>
-        <div className="notes-list">
-          {/* Itt vannak a note ikonok, 3 oszlopban */}
-          <div className="note-item">...</div>
-          <div className="note-item">...</div>
-          <div className="note-item">...</div>
-          {/* ... */}
-        </div>
-        {/* extra lábléc, ha van */}
       </article>
+      <CommonButton onClick={handleNew}>New</CommonButton>
     </div>
-    {/* <Footer
-      message={footerMessage}
-      extra={<span>Page specific footer: To create a new note, click the + button!</span>} */
-    /* /> */}
-    </>
   );
 }
