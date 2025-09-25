@@ -167,8 +167,10 @@ app.get('/api/notes', async (req, res) => {
       CREATE TABLE Notes (
         Id INT IDENTITY PRIMARY KEY,
         Title NVARCHAR(256) NOT NULL,
+        CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+        UserID INT NOT NULL,
         Content NVARCHAR(MAX) NOT NULL,
-        UserName NVARCHAR(256) NOT NULL
+        FOREIGN KEY (UserID) REFERENCES Users(Id)
       )
     `);
 
@@ -181,6 +183,39 @@ app.get('/api/notes', async (req, res) => {
     res.json(result.recordset);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+// Notes POST endpoint
+app.post('/api/notes', async (req, res) => {
+  const { title, content, userName } = req.body;
+  try {
+    await sql.connect(dbConfig);
+
+    // Lekérjük a szerző UserID-jét
+    const userResult = await sql.query`
+      SELECT Id, FullName FROM Users WHERE UserName = ${userName}
+    `;
+    if (userResult.recordset.length === 0) {
+      return res.status(400).json({ success: false, message: 'User not found!' });
+    }
+    const userId = userResult.recordset[0].Id;
+    const authorName = userResult.recordset[0].FullName;
+
+    // Dátum/idő
+    const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+
+    // Tartalom végére szerző + dátum/idő
+    const contentWithMeta = `${content}\n\n---\nAuthor: ${authorName}\nDate: ${now}`;
+
+    // Mentés
+    await sql.query`
+      INSERT INTO Notes (Title, CreatedAt, UserID, Content)
+      VALUES (${title}, ${now}, ${userId}, ${contentWithMeta})
+    `;
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
